@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="智慧猪床">
+    <link rel="stylesheet" href="./bootstrap-4/css/bootstrap.css">
+    <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./index.css">
+    <title>畜科院智慧猪床</title>
+</head>
+<body>
+        <nav class="navbar bg-dark navbar-dark justify-content-end navbar-expand-sm fixed-top header" role="navigation">
+            <div class="container-fluid">
+                <!-- logo -->
+                <a class="navbar-brand" href="#">智慧猪床管理系统</a>
+                <ul class="navbar-nav nav-tabs" id="mynav">
+                    <li class="nav-item">
+                        <a href="" class="nav-link">猪床概览</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">历史数据</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">统计分析</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar nav-link">
+                        <li class="active nav-item"><a href="" class="nav-link">
+                            OverView
+                            <!-- <span class="sr-only">(current)</span> -->
+                        </a></li>
+                        <li class="nav-item"><a href="" class="nav-link">BalaBala</a></li>
+                        <li class="nav-item"><a href="" class="nav-link">BalaBala</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-md-10 offset-md-2 offset-sm-3 main">
+                    <!-- charts show -->
+                    <div class="shows">
+                        
+                    </div>
+                    <div class="THchartShow">
+                        <canvas id="th-chart" width="500" height="200"></canvas>
+                    </div>
+                    <div class="weightShow">
+                        <canvas id="we-chart" width="500" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- letf sidebar contains the logo and sidebar -->
+        <div class="main-sidebar">
+        </div>
+
+        <!-- container Wrapper  content display -->
+        <div class="content-wrapper">
+        </div>
+
+        <!-- footer -->
+        <footer class="main-footer">
+            
+        </footer>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
+    <script src="./bootstrap-4/js/bootstrap.min.js"></script>
+
+
+    <!-- 导航栏切换交互 -->
+    <script>
+        $('#mynav').click(function (e) {
+            e.preventDefault();
+            $(this).tab("show");
+        });
+    </script>
+    <script>
+        $(function wsInit() {
+            var socket = io.connect("http://104.194.91.121:8080");
+
+            // listening ws events, recive back data
+            socket.on("pigbed", function (data) {
+                var pigDataShow = $('.shows');
+                var jsonDataObj = JSON.parse(data);
+                // 添加数据点
+                refreshDataPoint(MyTemperAndHumtyChart);
+                refreshDataPoint(MyWeightChart);
+                getMcuHumidity(jsonDataObj.humidity);
+                getMcuTemperture(jsonDataObj.temperature);
+                getMcuWeight(jsonDataObj.weight);
+                console.log("收到下位机数据", data);
+            });
+        });
+
+        // 更新chart数据点
+        function refreshDataPoint(chart) {
+            chart.data.labels.push('');
+        }
+
+        function getMcuHumidity(data) {
+            addData(MyTemperAndHumtyChart, '', 1, data);
+            // 后续湿度扩展
+        }
+
+        function getMcuTemperture(data) {
+            let temNum = parseFloat(data)/10;
+            addData(MyTemperAndHumtyChart, '', 0, temNum);
+            // 后续温度扩展
+        }
+
+        function getMcuWeight(data) {
+            let temNum = parseFloat(data);
+            addData(MyWeightChart, '', 0, temNum);
+            // 后续体重扩展
+        }
+
+        function removeMcuData(chart, witch) {
+            if (chart.data.datasets[witch].data.length > 10) {   // 温度和湿度数据总数超过20个之后，前面的数据被清除
+
+                removeData(chart);  // 清空第一个数据
+            }
+        }
+
+        setInterval(function () {
+            removeMcuData(MyTemperAndHumtyChart, 0);
+            removeMcuData(MyWeightChart, 0);
+        }, 200);  // 定时清除数据点
+
+        function getBedData(pigdata) {
+            var recData = {};
+            recData = JSON.parse(pigdata);
+        }
+    </script>
+
+
+    <script>
+        var TemperandHumtyChart = $("#th-chart");  // 实例化温度、湿度变化折线图
+        var WeightChart = $('#we-chart');
+
+        Chart.defaults.global.responsive = true;
+        Chart.defaults.global.defaultFontColor = 'black';
+
+        function addData(chart, label, which, data) {    // 实时添加数据到图表
+                chart.data.datasets.forEach(function (datasets,index) {
+                    //选择给那个数据添加
+                    if (index === which) {
+                        datasets.data.push(data);
+                    }
+                })
+                chart.update();
+            }
+
+        function removeData(chart) {      // 实时从图表中移除数据
+                chart.data.labels.splice(0, 1);
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.splice(0, 1);
+                });
+                chart.update();
+            }
+
+        var MyTemperAndHumtyChart = new Chart(TemperandHumtyChart, {
+
+               type: 'line',
+               data : {
+                       labels:[],
+                       datasets: [{
+                       label: '温度',
+                       backgroundColor: 'rgba(239,207,104,0.8)',
+                       borderColor: 'rgba(238, 170, 94, 0.4)',
+                       borderWidth: 1.6,
+                       data: [],
+                       fill: false
+                   },
+                   {
+                       label: '湿度',
+                       backgroundColor: 'rgba(110, 183, 239, 0.8)',
+                       borderColor: 'rgba(100, 147, 202, 0.7)',
+                       borderWidth: 1.6,
+                       data: [],
+                       fill: false
+                   }]
+               },
+
+               options : {
+                   responsive: true,
+                   title: {
+                       display: true,
+                       lineHeight: 0.2,
+                       fontFamily: 'Helvetica Neue',
+                       fontColor: '#66ccfe',
+                       padding: 8,
+                       fontSize: 14,
+                       text: '猪床温湿度监测'
+                   },
+                   tooltips: {
+                       mode: 'index',
+                       intersect: false,
+                       bodyFontSize: 10,
+                       bodyFontColor: '#f2f2f2',
+                   },
+                   hover: {
+                       mode: 'nearest',
+                       intersect: false
+                   },
+                   scales: {
+                       yAxes: [{
+                           display: true,
+                           scaleLabel: {
+                               display: true,
+                               labelString: '温度'
+                           },
+                           ticks: {
+                               beginAtZero:false
+                           },
+                           // stacked: true,
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'T'
+                           },
+                        //    ticks: {
+                        //         min: 0,
+                        //         max: 100,
+                        //         stepSize: 5
+                        //     },
+                       }]
+                   },
+                   elements: {
+                       line: {
+                           // tension: 0, // disables bezier curves 消除贝塞尔曲线效果
+                       }
+                   }
+               }
+            });
+
+            var MyWeightChart = new Chart(WeightChart, {
+
+               type: 'line',
+               data : {
+                       labels:[],
+                       datasets: [{
+                       label: '重量',
+                       backgroundColor: 'rgba(188, 157, 114, 0.8)',
+                       borderColor: 'rgba(94,66,64,0.5)',
+                       borderWidth: 1.6,
+                       data: [],
+                       fill: false
+                   }]
+               },
+
+               options : {
+                   responsive: true,
+                   title: {
+                       display: true,
+                       lineHeight: 0.2,
+                       fontFamily: 'Helvetica Neue',
+                       fontColor: '#66ccfe',
+                       fontSize: 14,
+                       padding: 8,
+                       text: '猪床重量监测'
+                   },
+                   tooltips: {
+                       mode: 'index',
+                       intersect: false,
+                       bodyFontSize: 10,
+                       bodyFontColor: '#f2f2f2',
+                   },
+                   hover: {
+                       mode: 'nearest',
+                       intersect: false
+                   },
+                   scales: {
+                       yAxes: [{
+                           display: true,
+                           scaleLabel: {
+                               display: true,
+                               labelString: '重量'
+                           },
+                           ticks: {
+                               beginAtZero:false
+                           },
+                           // stacked: true,
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Kg'
+                           },
+                        //    ticks: {
+                        //         min: 0,
+                        //         max: 100,
+                        //         stepSize: 5
+                        //     },
+                       }]
+                   },
+                   elements: {
+                       line: {
+                           // tension: 0, // disables bezier curves 消除贝塞尔曲线效果
+                       }
+                   }
+               }
+            });
+        
+    </script>
+
+</body>
+</html>

@@ -1,19 +1,26 @@
 {
-  "name": "labbacked",
+  "name": "mqtttest",
   "version": "1.0.0",
-  "description": "a lab management system server",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "zhiweizhou",
-  "license": "ISC",
+  "description": "a mqtt test",
+  "main": "server.js",
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "compression": "^1.7.4",
-    "config-lite": "^2.1.0",
-    "cookie-parser": "^1.4.4",
-    "express": "^4.16.4",
-    "mongoose": "^5.5.0"
-  }
+    "mosca": "^2.8.3",
+    "mqtt": "^2.18.8",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/407Lab/407_LabManageSys_Server.git"
+  },
+  "author": "zzw",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/407Lab/407_LabManageSys_Server/issues"
+  },
+  "homepage": "https://github.com/407Lab/407_LabManageSys_Server#readme"
 }
