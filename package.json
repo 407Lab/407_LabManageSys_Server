@@ -4,7 +4,8 @@
   "description": "a lab management system server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
   "author": "zhiweizhou",
   "license": "ISC",
@@ -14,6 +15,14 @@
     "config-lite": "^2.1.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
-    "mongoose": "^5.5.0"
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.0",
+    "objectid-to-timestamp": "^1.3.0",
+    "sha1": "^1.1.1"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
   }
 }

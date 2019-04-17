@@ -1,7 +1,13 @@
+/**
+ * 负责mongodb的初始化
+ * 挂载监听事件
+ * 暴露出mongose对象
+ */
+
 const config = require('config-lite') (__dirname)
 const mongoose = require('mongoose')
 
-mongoose.connect(config.mongodb)
+mongoose.connect(config.mongodb)  // 🔗mongodb
 
 /**
   * 连接成功
