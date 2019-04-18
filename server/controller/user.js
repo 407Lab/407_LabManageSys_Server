@@ -58,6 +58,7 @@ const Login = (req, res) => {
     token: createToken(this.username)
   })
   Model.User.findOne({ username: userLogin.username }, (err, doc) => {
+    // doc 是原先数据库中存取的数据  userlogin对象是登陆获取到的数据
     if (err) console.error(err)
     if (!doc) {
       console.log('账户不存在')
@@ -66,7 +67,7 @@ const Login = (req, res) => {
         success: false
       })
     } else if (userLogin.password === doc.password) {
-      console.log('登陆成功')
+      console.log('登陆成功', doc)
       res.json({
         success: true,
         username: doc.username,
