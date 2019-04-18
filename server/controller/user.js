@@ -48,6 +48,41 @@ const Register = (req, res) => {
   )
 }
 
+/**
+ * 用户登陆接口
+ */
+const Login = (req, res) => {
+  let userLogin = new Model.User({
+    username: req.body.username,
+    password: sha1(req.body.password),
+    token: createToken(this.username)
+  })
+  Model.User.findOne({ username: userLogin.username }, (err, doc) => {
+    if (err) console.error(err)
+    if (!doc) {
+      console.log('账户不存在')
+      res.json({
+        msg: '该账户不存在',
+        success: false
+      })
+    } else if (userLogin.password === doc.password) {
+      console.log('登陆成功')
+      res.json({
+        success: true,
+        username: doc.username,
+        time: moment(objectIdToTimestamp(doc._id)).format('YYYY-MM-DD HH:mm:ss'),
+        token: userLogin.token
+      })
+    } else {
+      console.warn('密码错误')
+      res.json({
+        success: false,
+        msg: '密码错误'
+      })
+    }
+  })
+}
+
 module.exports = router => {
-  router.post('/register', Register)
+  router.post('/register', Register), router.post('/login', Login)
 }
