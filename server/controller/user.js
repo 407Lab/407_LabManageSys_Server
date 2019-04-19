@@ -19,9 +19,9 @@ const Register = (req, res) => {
   })
 
   // 将 objectid 转换为 用户创建时间
-  userRegister.create_time = moment(objectIdToTimestamp(userRegister._id)).format(
-    'YYYY-MM-DD HH:mm:ss'
-  )
+  userRegister.create_time = moment(
+    objectIdToTimestamp(userRegister._id)
+  ).format('YYYY-MM-DD HH:mm:ss')
 
   Model.User.findOne(
     {
@@ -71,7 +71,9 @@ const Login = (req, res) => {
       res.json({
         success: true,
         username: doc.username,
-        time: moment(objectIdToTimestamp(doc._id)).format('YYYY-MM-DD HH:mm:ss'),
+        time: moment(objectIdToTimestamp(doc._id)).format(
+          'YYYY-MM-DD HH:mm:ss'
+        ),
         token: userLogin.token
       })
     } else {
@@ -84,6 +86,28 @@ const Login = (req, res) => {
   })
 }
 
+/**
+ * 用户删除接口
+ */
+const DelUser = (req, res) => {
+  Model.User.findOneAndDelete({ _id: req.body.id }, (err, doc) => {
+    if (err) throw err
+    if (!doc) {
+      res.json({
+        msg: '该用户不存在,无法删除',
+        success: false
+      })
+    } else {
+      res.json({
+        success: true,
+        msg: '用户删除成功'
+      })
+    }
+  })
+}
+
 module.exports = router => {
-  router.post('/register', Register), router.post('/login', Login)
+  router.post('/register', Register),
+    router.post('/login', Login),
+    router.post('/deluser', checkToken, DelUser)
 }
