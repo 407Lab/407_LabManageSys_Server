@@ -13,7 +13,9 @@ mongoose.connect(config.mongodb, { useNewUrlParser: true }) // 🔗mongodb
  * 连接成功
  */
 mongoose.connection.on('connected', function() {
-  console.log(`connected to ${config.mongodb} successfully 🎉`)
+  console.log(
+    `Congratulations 🎉 💐 connected to ${config.mongodb} successfully 🎉`
+  )
 })
 
 /**
