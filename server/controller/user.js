@@ -28,7 +28,7 @@ const Register = (req, res) => {
       username: userRegister.username.toLowerCase()
     },
     (err, doc) => {
-      if (err) console.error(err)
+      if (err) throw err
       // 如果用户已经存在， 则不能注册
       if (doc) {
         res.json({
@@ -59,7 +59,7 @@ const Login = (req, res) => {
   })
   Model.User.findOne({ username: userLogin.username }, (err, doc) => {
     // doc 是原先数据库中存取的数据  userlogin对象是登陆获取到的数据
-    if (err) console.error(err)
+    if (err) throw err
     if (!doc) {
       console.log('账户不存在')
       res.json({
@@ -106,8 +106,19 @@ const DelUser = (req, res) => {
   })
 }
 
+/**
+ * 用户查询接口 (查询所有用户列表)
+ */
+const listAllUser = (req, res) => {
+  Model.User.find({}, (err, doc) => {
+    if (err) throw err
+    res.send(doc)
+  })
+}
+
 module.exports = router => {
   router.post('/register', Register),
     router.post('/login', Login),
-    router.post('/deluser', checkToken, DelUser)
+    router.post('/deluser', checkToken, DelUser),
+    router.post('/userlist', checkToken, listAllUser)
 }
