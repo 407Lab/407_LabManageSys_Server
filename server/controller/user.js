@@ -117,8 +117,8 @@ const listAllUser = (req, res) => {
 }
 
 module.exports = router => {
-  router.post('/register', Register),
-    router.post('/login', Login),
-    router.post('/deluser', checkToken, DelUser),
-    router.post('/userlist', checkToken, listAllUser)
+  router.post('/user/register', Register),
+    router.post('/user/login', Login),
+    router.post('/user/deluser', checkToken, DelUser),
+    router.post('/user/userlist', checkToken, listAllUser)
 }

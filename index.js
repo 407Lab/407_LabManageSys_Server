@@ -4,9 +4,11 @@ const cookieParser = require('cookie-parser') // cookie解析
 const config = require('config-lite')(__dirname) // 全局配置
 const compression = require('compression') // 开启gzip压缩
 const routes = require('./server/routes/user')
+const cors = require('cors')
 
 const app = express()
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
