@@ -15,7 +15,7 @@ module.exports = function(req, res, next) {
   }
 
   //=== token verify ===//
-  let token = req.headers['authorization'].split(' ')[1] || ''
+  let token = req.headers['authorization'] || ''
   jwt.verify(token, secretOrPrivateKey, (err, decode) => {
     if (err) {
       res.json({
