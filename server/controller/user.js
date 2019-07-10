@@ -30,7 +30,10 @@ const Register = (req, res) => {
   let userRegister = new Model.User({
     username: req.body.username,
     password: sha1(req.body.password),
-    recheck: req.body.recheck,
+    specialities: req.body.specialities,
+    grade: req.body.grade,
+    lab: req.body.lab,
+    skills: req.body.skills,
     roles: ['admin'],
     avatar:
       'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
@@ -47,6 +50,7 @@ const Register = (req, res) => {
       username: userRegister.username.toLowerCase()
     },
     (err, doc) => {
+      console.log(doc)
       if (err) throw err
       // 如果用户已经存在， 则不能注册
       if (doc) {
@@ -55,7 +59,7 @@ const Register = (req, res) => {
             code: 201,
             msg: '用户名已存在',
             success: false,
-            result: null
+            result: {}
           }
         })
       } else {
@@ -66,7 +70,7 @@ const Register = (req, res) => {
               code: 200,
               msg: '注册成功',
               success: true,
-              result: null
+              result: {}
             }
           })
         })

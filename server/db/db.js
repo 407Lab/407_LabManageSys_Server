@@ -6,6 +6,7 @@
 
 const config = require('config-lite')(__dirname)
 const mongoose = require('mongoose')
+let connectTimer = undefined
 
 mongoose.connect(config.mongodb, { useNewUrlParser: true }) // 🔗mongodb
 
@@ -16,6 +17,7 @@ mongoose.connection.on('connected', function() {
   console.log(
     `Congratulations 🎉 💐 connected to ${config.mongodb} successfully 🎉`
   )
+  clearTimeout(connectTimer)
 })
 
 /**
@@ -23,6 +25,8 @@ mongoose.connection.on('connected', function() {
  */
 mongoose.connection.on('error', function(err) {
   console.error('Mongoose connection error: ' + err)
+  // 连接不成功时进行重复连接
+  reConnect()
 })
 
 /**
@@ -30,6 +34,16 @@ mongoose.connection.on('error', function(err) {
  */
 mongoose.connection.on('disconnected', function() {
   console.log('mongoose connection disconnected')
+  reConnect()
 })
+
+/*
+ * 数据库重连
+ */
+function reConnect() {
+  connectTimer = setTimeout(() => {
+    mongoose.connect(config.mongodb, { useNewUrlParser: true })
+  }, 5000)
+}
 
 module.exports = mongoose
