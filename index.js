@@ -5,8 +5,10 @@ const config = require('config-lite')(__dirname) // 全局配置
 const compression = require('compression') // 开启gzip压缩
 const routes = require('./server/routes/user')
 const cors = require('cors')
+const http = require('http')
 
 const app = express()
+http.createServer(app).listen(config.port)
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -22,6 +24,6 @@ app.use(function(req, res, next) {
   next(err)
 })
 
-app.listen(config.port, function() {
-  console.log(`server is running at port ${config.port}`)
-})
+// app.listen(config.port, function() {
+//   console.log(`server is running at port ${config.port}`)
+// })
