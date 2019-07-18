@@ -63,6 +63,7 @@ $ npm start 或者  node index.js
 
 ```
 
+<<<<<<< HEAD
 ## 开发进展
 
 - [x] 用户登陆
@@ -71,3 +72,11 @@ $ npm start 或者  node index.js
 - [x] 用户删除
 
 > ps: api接口文档默认请求base_url 为 `http://localhost:8082` ，大家根据自己实际情况修改。
+=======
+##开发进展
+
+- [ ] 用户登陆
+- [x] 用户注册
+- [ ] 用户查询
+- [ ] 用户删除
+>>>>>>> fcccd1a31866e7c0a7e2237d26cb650c60e251f5
