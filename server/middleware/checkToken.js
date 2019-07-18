@@ -3,18 +3,27 @@
  */
 
 const jwt = require('jsonwebtoken')
+const secretOrPrivateKey = 'secret'
 
 module.exports = function(req, res, next) {
-  console.log('this is token watch', req.headers)
-  let token = req.headers['authorization'].split(' ')[1]
-  console.log('tokens', token)
-  // 解构 token，生成一个对象 { name: xx, iat: xx, exp: xx }
-  let decoded = jwt.decode(token, 'secret')
-  if (token && decoded.exp <= Date.now() / 1000) {
+  // ===  is token in header？  ===//
+  if (!req.headers['authorization']) {
     return res.json({
-      code: 401,
-      message: 'token过期，请重新登录'
+      msg: '用户未登录',
+      code: 400
     })
   }
-  next()
+
+  //=== token verify ===//
+  let token = req.headers['authorization'] || ''
+  jwt.verify(token, secretOrPrivateKey, (err, decode) => {
+    if (err) {
+      res.json({
+        msg: 'token过期或无效，请确认重新登陆重新登录',
+        success: false
+      })
+    } else {
+      next()
+    }
+  })
 }

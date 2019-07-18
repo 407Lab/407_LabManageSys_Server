@@ -9,7 +9,12 @@ const mongoose = require('./db')
 const userSchema = mongoose.Schema({
   username: String,
   password: String,
-  recheck: String,
+  specialities: String,
+  grade: String,
+  lab: String,
+  skills: String,
+  roles: Array,
+  avatar: String,
   token: String,
   create_time: Date
 })

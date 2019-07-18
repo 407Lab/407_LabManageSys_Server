@@ -1,0 +1,1 @@
+{  "name": "スカイクラッドの観测者",  "version": "1.0.0",  "description": "实验室管理系统api接口文档",  "title": "接口文档",  "url": "http://localhost:8082",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "apidoc": "0.3.0",  "generator": {    "name": "apidoc",    "time": "2019-04-22T15:34:18.150Z",    "url": "http://apidocjs.com",    "version": "0.17.7"  }}

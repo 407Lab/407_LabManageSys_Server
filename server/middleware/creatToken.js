@@ -4,14 +4,15 @@
  */
 
 const jwt = require('jsonwebtoken')
+const secretOrPrivateKey = 'secret'
 
 module.exports = function(name) {
   const token = jwt.sign(
     {
       name: name
     },
-    'secret',
-    { expiresIn: '30s' }
+    secretOrPrivateKey,
+    { expiresIn: 60*5 }
   )
   return token
 }
