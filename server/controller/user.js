@@ -210,6 +210,7 @@ const getUserInfo = (req, res) => {
   })
 }
 
+
 module.exports = router => {
   router.post('/user/register', Register),
     router.post('/user/login', Login),
