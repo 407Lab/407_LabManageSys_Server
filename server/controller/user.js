@@ -64,7 +64,7 @@ const Register = (req, res) => {
         })
       } else {
         userRegister.save(err => {
-          if (err) console.error(err)
+          if (err) return
           res.json({
             data: {
               code: 200,
@@ -173,7 +173,24 @@ const DelUser = (req, res) => {
 const listAllUser = (req, res) => {
   Model.User.find({}, (err, doc) => {
     if (err) throw err
-    res.send(doc)
+    if (doc) {
+      res.json({
+        data: {
+          result: doc,
+          code: 200,
+          success: true,
+          msg: '获取用户列表成功'
+        }
+      })
+    } else {
+      res.json({
+        data: {
+          code: 400,
+          success: false,
+          msg: '获取用户信息失败'
+        }
+      })
+    }
   })
 }
 
@@ -209,7 +226,6 @@ const getUserInfo = (req, res) => {
     }
   })
 }
-
 
 module.exports = router => {
   router.post('/user/register', Register),
