@@ -2,6 +2,7 @@ var mosca = require('mosca');//构建服务器
 const http = require('http')
 
 var config = {
+    host: '47.96.5.212',
     port: 1883
 };
 
