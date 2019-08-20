@@ -26,7 +26,7 @@ function Handle(req, res) {
         });
 }
 
-/*
+/*`
  *   socket 监听事件
  */
 io.sockets.on("connection", function (socket) {
