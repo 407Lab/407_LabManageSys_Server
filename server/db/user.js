@@ -16,7 +16,8 @@ const userSchema = mongoose.Schema({
   roles: Array,
   avatar: String,
   token: String,
-  create_time: Date
+  create_time: Date,
+  uid: String
 })
 
 /**

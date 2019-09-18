@@ -26,7 +26,7 @@ const moment = require('moment')
  * @apiVersion 1.0.0
  */
 const Register = (req, res) => {
-  // 获取注册信息，并生成user数据模型
+  // 获取注册信息，并生成user数据模型 角色后super_admin admin  member, 默认注册为member
   let userRegister = new Model.User({
     username: req.body.username,
     password: sha1(req.body.password),
@@ -34,10 +34,19 @@ const Register = (req, res) => {
     grade: req.body.grade,
     lab: req.body.lab,
     skills: req.body.skills,
-    roles: ['admin'],
+    roles: ['member'],
     avatar:
       'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    token: createToken(this.username)
+    token: createToken(this.username),
+    uid: (() => {
+      let code = ''
+      for (let i = 0; i < 6; i++) {
+        let radom = Math.floor(Math.random() * 10)
+        code += radom
+      }
+      console.log(code, 'uid info')
+      return code
+    })()
   })
 
   // 将 objectid 转换为 用户创建时间
@@ -70,7 +79,9 @@ const Register = (req, res) => {
               code: 200,
               msg: '注册成功',
               success: true,
-              result: {}
+              result: {
+                uid: userRegister.uid
+              }
             }
           })
         })
@@ -119,14 +130,14 @@ const Login = (req, res) => {
                 time: moment(objectIdToTimestamp(doc._id)).format(
                   'YYYY-MM-DD HH:mm:ss'
                 ),
-                token: userLogin.token
+                token: userLogin.token,
+                uid: doc.uid
               }
             }
           })
         }
       })
     } else {
-      console.warn('密码错误')
       res.json({
         data: {
           code: 400,
